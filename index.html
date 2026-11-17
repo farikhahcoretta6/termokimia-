@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Praktikum Interaktif Termokimia</title>
+<style>
+:root{--bg:#f3f0ff;--tx:#1b1340;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#120d2b;--tx:#efeaff}}
+:root[data-theme="dark"]{--bg:#120d2b;--tx:#efeaff}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--tx);font-family:system-ui,"Segoe UI",Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+#stage{container-type:inline-size;width:min(100vw - 16px,(100vh - 24px)*16/9);aspect-ratio:16/9;position:relative;overflow:hidden;border-radius:14px;color:#fff;background:linear-gradient(135deg,#3a1c8c,#c2185b 55%,#ff8f00);box-shadow:0 10px 40px #0006}
+.scr{position:absolute;inset:0;display:none;padding:3cqw 4cqw}
+.scr.on{display:flex}
+.c{flex-direction:column;align-items:center;justify-content:center;text-align:center}
+h1{font-size:5.2cqw;margin:.5cqw 0;text-shadow:0 .3cqw 1cqw #0005}
+h2{font-size:3.4cqw;margin:0 0 1cqw}
+p,li{font-size:1.9cqw;line-height:1.45}
+.btn{font:inherit;font-weight:700;font-size:2.1cqw;color:#fff;border:0;border-radius:10cqw;padding:1cqw 3.2cqw;margin:.6cqw;cursor:pointer;background:linear-gradient(90deg,#00c9a7,#2979ff);box-shadow:0 .5cqw 1.2cqw #0004;transition:transform .15s}
+.btn:hover{transform:scale(1.06)}.btn.r{background:linear-gradient(90deg,#ff9100,#ff3d00)}.btn.f{background:linear-gradient(90deg,#e91e63,#7c4dff)}
+.chips{position:absolute;top:1.6cqw;left:4cqw;display:flex;gap:1cqw;z-index:3}
+.chip{font-size:1.5cqw;padding:.4cqw 1.5cqw;border-radius:5cqw;background:#ffffff30}.chip.on{background:#fff;color:#4a148c;font-weight:800}
+#scene{padding-top:7cqw}
+#left{flex:1.05;padding-right:2cqw}#right{flex:1;display:flex;align-items:center;justify-content:center}
+#right svg{width:100%;height:auto;max-height:100%}
+.term{display:inline-block;background:#ffeb3b;color:#4a148c;font-weight:800;font-size:1.7cqw;padding:.3cqw 1.4cqw;border-radius:5cqw;margin-bottom:1cqw}
+ul{margin:0;padding-left:2.2cqw}
+#sub{position:absolute;left:5cqw;right:5cqw;bottom:6.4cqw;background:#000a;border-radius:1cqw;padding:.7cqw 1.5cqw;font-size:1.5cqw;text-align:center;z-index:3}
+#ctl{position:absolute;bottom:1cqw;left:0;right:0;display:flex;justify-content:center;gap:1cqw;z-index:3}
+#ctl button{font-size:1.6cqw;border:0;border-radius:2cqw;padding:.5cqw 1.6cqw;background:#fff;color:#4a148c;cursor:pointer;font-weight:700}
+#bar{position:absolute;bottom:0;left:0;height:.6cqw;background:#ffeb3b;width:0;z-index:4;transition:width .4s}
+.opt{display:block;width:100%;text-align:left;font:inherit;font-size:1.8cqw;color:#fff;background:#ffffff26;border:.2cqw solid #fff5;border-radius:1.2cqw;padding:.8cqw 1.5cqw;margin:.6cqw 0;cursor:pointer}
+.opt:hover{background:#ffffff40}.opt.ok{background:#00c853;border-color:#fff}.opt.no{background:#d50000}
+#exp{background:#fff;color:#1b1340;border-radius:1.2cqw;padding:.8cqw 1.5cqw;font-size:1.65cqw;margin-top:1cqw;display:none}
+.pr{display:flex;gap:1cqw;margin:.8cqw 0}.pr .btn{font-size:1.7cqw;padding:.7cqw 2cqw}
+.big{font-size:2.4cqw;font-weight:800;color:#ffeb3b}
+.up{animation:up 2s linear infinite}.dn{animation:dn 2s linear infinite}.bub{animation:bub 2.5s ease-in infinite}
+@keyframes up{0%{transform:translateY(20px);opacity:0}30%{opacity:1}100%{transform:translateY(-40px);opacity:0}}
+@keyframes dn{0%{transform:translateY(-40px);opacity:0}30%{opacity:1}100%{transform:translateY(20px);opacity:0}}
+@keyframes bub{0%{transform:translateY(0);opacity:.9}100%{transform:translateY(-60px);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{transform:scale(1.15)}}
+</style></head><body>
+<div id="stage">
+ <div class="chips" id="chips"><span class="chip">1 Mengenali</span><span class="chip">2 Memahami</span><span class="chip">3 Mencoba</span></div>
+ <div class="scr c on" id="intro">
+  <div style="font-size:7cqw">🧪🔥❄️</div>
+  <h1>Praktikum Interaktif Termokimia</h1>
+  <p>Kimia Kelas XI • SMA N 1 Depok<br>Mengenali → Memahami → Mencoba • 10 Kuis dengan Pembahasan</p>
+  <button class="btn" onclick="startAll()">▶ START</button>
+ </div>
+ <div class="scr" id="scene"><div id="left"></div><div id="right"></div></div>
+ <div class="scr" id="quiz" style="flex-direction:column;padding-top:7cqw"></div>
+ <div class="scr c" id="res"></div>
+ <div class="scr c" id="end"><div style="font-size:7cqw">🎓</div><h1>Terima kasih!</h1><p>Semangat belajar kimia. Sampai jumpa di praktikum berikutnya.</p><button class="btn r" onclick="location.reload()">↻ Mulai dari awal</button></div>
+ <div id="sub"></div>
+ <div id="ctl" style="display:none"><button onclick="go(-1)">⏮</button><button id="pp" onclick="pause()">⏸</button><button onclick="go(1)">⏭</button><button id="mu" onclick="mute()">🔊</button></div>
+ <div id="bar"></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const beaker=c=>`<path d="M130 70v100q0 22 22 22h96q22 0 22-22V70" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><rect x="137" y="115" width="126" height="72" rx="10" fill="${c}" opacity=".9"/>`;
+const bubs=`<circle class="bub" cx="170" cy="170" r="6" fill="#fff8"/><circle class="bub" style="animation-delay:.8s" cx="200" cy="175" r="5" fill="#fff8"/><circle class="bub" style="animation-delay:1.6s" cx="230" cy="170" r="7" fill="#fff8"/>`;
+const arr=(cls,col,t)=>[150,200,250].map((x,i)=>`<g class="${cls}" style="animation-delay:${i*.6}s"><text x="${x}" y="60" font-size="30" fill="${col}" text-anchor="middle">${t}</text></g>`).join('');
+const lvl=(y,l)=>`<line x1="20" y1="${y}" x2="170" y2="${y}" stroke="#fff" stroke-width="5"/><text x="95" y="${y-8}" fill="#fff" font-size="13" text-anchor="middle">${l}</text>`;
+const atom=(x,y,c,t,r=22,a='')=>`<g ${a}><circle cx="${x}" cy="${y}" r="${r}" fill="${c}" stroke="#fff" stroke-width="3"/><text x="${x}" y="${y+5}" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">${t}</text></g>`;
+const S=[
+{ph:0,t:'Eksoterm',h:'Reaksi Melepas Kalor',pts:['Kalor berpindah dari sistem ke lingkungan','Suhu lingkungan naik, wadah terasa panas','ΔH bernilai negatif (ΔH < 0)','Contoh: pembakaran, NaOH + HCl'],n:'Kenali dulu istilah Eksoterm. Reaksi eksoterm melepas kalor dari sistem ke lingkungan. Akibatnya suhu lingkungan naik dan wadah terasa panas. Nilai perubahan entalpinya negatif. Contohnya pembakaran dan reaksi natrium hidroksida dengan asam klorida.',
+ a:()=>`<svg viewBox="0 0 400 225">${beaker('#ff5722')}${bubs}${arr('up','#ffeb3b','🔥')}<text x="200" y="215" fill="#fff" font-size="16" text-anchor="middle">sistem → lingkungan (kalor keluar)</text><rect x="320" y="50" width="14" height="130" rx="7" fill="#fff4"/><rect x="320" y="60" width="14" height="120" rx="7" fill="#ff1744"><animate attributeName="y" values="150;60" dur="3s" fill="freeze"/><animate attributeName="height" values="30;120" dur="3s" fill="freeze"/></rect></svg>`},
+{ph:0,t:'Endoterm',h:'Reaksi Menyerap Kalor',pts:['Kalor berpindah dari lingkungan ke sistem','Suhu lingkungan turun, wadah terasa dingin','ΔH bernilai positif (ΔH > 0)','Contoh: fotosintesis, NH₄Cl larut dalam air'],n:'Sekarang istilah Endoterm. Reaksi endoterm menyerap kalor dari lingkungan. Akibatnya suhu lingkungan turun dan wadah terasa dingin. Nilai perubahan entalpinya positif. Contohnya fotosintesis dan larutnya amonium klorida dalam air.',
+ a:()=>`<svg viewBox="0 0 400 225">${beaker('#29b6f6')}${arr('dn','#b3e5fc','❄️')}<text x="200" y="215" fill="#fff" font-size="16" text-anchor="middle">lingkungan → sistem (kalor masuk)</text><rect x="320" y="50" width="14" height="130" rx="7" fill="#fff4"/><rect x="320" y="60" width="14" height="120" rx="7" fill="#40c4ff"><animate attributeName="y" values="60;150" dur="3s" fill="freeze"/><animate attributeName="height" values="120;30" dur="3s" fill="freeze"/></rect></svg>`},
+{ph:1,t:'Entalpi Reaksi',h:'Perubahan Entalpi (ΔH)',pts:['ΔH = H produk − H reaktan','Eksoterm: produk lebih rendah, ΔH negatif','Endoterm: produk lebih tinggi, ΔH positif','Satuan: kJ atau kJ/mol'],n:'Memahami entalpi reaksi. Entalpi reaksi, disimbolkan delta H, adalah selisih entalpi produk dengan entalpi pereaksi. Pada reaksi eksoterm, produk berenergi lebih rendah sehingga delta H negatif. Pada reaksi endoterm, produk berenergi lebih tinggi sehingga delta H positif.',
+ a:()=>`<svg viewBox="0 0 400 225">${lvl(50,'Reaktan')}${lvl(150,'Produk')}<line x1="95" y1="58" x2="95" y2="140" stroke="#ffeb3b" stroke-width="4" stroke-dasharray="6"><animate attributeName="y2" values="58;140" dur="2s" repeatCount="indefinite"/></line><text x="105" y="105" fill="#ffeb3b" font-size="14">ΔH &lt; 0 (eksoterm)</text>${lvl(190,'Reaktan').replace(/x1="20"/,'x1="220"').replace(/x2="170"/,'x2="370"').replace(/x="95"/,'x="295"')}${lvl(110,'Produk').replace(/x1="20"/,'x1="220"').replace(/x2="170"/,'x2="370"').replace(/x="95"/,'x="295"')}<line x1="295" y1="182" x2="295" y2="120" stroke="#80d8ff" stroke-width="4" stroke-dasharray="6"><animate attributeName="y2" values="182;120" dur="2s" repeatCount="indefinite"/></line><text x="305" y="155" fill="#80d8ff" font-size="14">ΔH &gt; 0</text><text x="305" y="215" fill="#fff" font-size="13">endoterm</text></svg>`},
+{ph:1,t:'Entalpi Pembentukan',h:'Entalpi Pembentukan Standar (ΔHf°)',pts:['Kalor pembentukan 1 mol senyawa dari unsur-unsurnya','Keadaan standar: 298 K, 1 atm','ΔHf° unsur bebas stabil = 0 (O₂, H₂, C)','ΔH reaksi = ΣΔHf° produk − ΣΔHf° reaktan'],n:'Entalpi pembentukan standar adalah perubahan entalpi saat satu mol senyawa terbentuk dari unsur-unsurnya pada suhu dua ratus sembilan puluh delapan Kelvin dan tekanan satu atmosfer. Unsur bebas yang stabil, seperti oksigen, memiliki nilai nol. Entalpi reaksi dihitung dari jumlah entalpi pembentukan produk dikurangi pereaksi.',
+ a:()=>`<svg viewBox="0 0 400 225">${atom(70,90,'#e53935','H',16)}${atom(110,90,'#e53935','H',16)}${atom(70,150,'#1e88e5','O',22)}<text x="170" y="125" fill="#ffeb3b" font-size="34">→</text><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -6;0 0" dur="2s" repeatCount="indefinite"/>${atom(290,110,'#1e88e5','O',28)}${atom(250,150,'#e53935','H',17)}${atom(330,150,'#e53935','H',17)}</g><text x="200" y="205" fill="#fff" font-size="16" text-anchor="middle">H₂ + ½O₂ → H₂O  ΔHf° = −286 kJ/mol</text></svg>`},
+{ph:1,t:'Energi Ikat',h:'Energi Ikatan',pts:['Energi untuk memutus 1 mol ikatan (fase gas)','Memutus ikatan: butuh energi (endoterm)','Membentuk ikatan: melepas energi (eksoterm)','ΔH = Σ E ikat putus − Σ E ikat terbentuk'],n:'Energi ikat adalah energi yang diperlukan untuk memutuskan satu mol ikatan pada fase gas. Memutus ikatan membutuhkan energi, sedangkan membentuk ikatan melepaskan energi. Maka delta H sama dengan jumlah energi ikat yang diputus dikurangi jumlah energi ikat yang terbentuk.',
+ a:()=>`<svg viewBox="0 0 400 225"><g><animateTransform attributeName="transform" type="translate" values="0 0;-30 0;-30 0;0 0" dur="4s" repeatCount="indefinite"/>${atom(150,90,'#e53935','H',20)}</g><g><animateTransform attributeName="transform" type="translate" values="0 0;30 0;30 0;0 0" dur="4s" repeatCount="indefinite"/>${atom(250,90,'#e53935','H',20)}</g><line x1="170" y1="90" x2="230" y2="90" stroke="#fff" stroke-width="6"><animate attributeName="opacity" values="1;0;0;1" dur="4s" repeatCount="indefinite"/></line><text x="200" y="145" fill="#ffeb3b" font-size="17" text-anchor="middle">putus ikatan: +436 kJ</text><text x="200" y="180" fill="#b9f6ca" font-size="17" text-anchor="middle">bentuk ikatan: −436 kJ</text></svg>`},
+{ph:1,t:'Kalorimetri',h:'Kalorimetri: Mengukur Kalor Reaksi',pts:['Kalorimeter: alat pengukur kalor reaksi','q = m × c × ΔT (c air = 4,2 J/g°C)','q reaksi = −q larutan','ΔH = −q / mol zat'],n:'Kalorimetri adalah cara mengukur kalor reaksi menggunakan kalorimeter. Kalor larutan dihitung dengan rumus q sama dengan massa dikali kalor jenis dikali perubahan suhu. Kalor reaksi bernilai sama dengan kalor larutan, tetapi berlawanan tanda. Entalpi reaksi diperoleh dengan membagi kalor reaksi dengan jumlah mol.',
+ a:()=>`<svg viewBox="0 0 400 225"><rect x="120" y="60" width="150" height="130" rx="14" fill="#ffffff30" stroke="#fff" stroke-width="5"/><rect x="127" y="100" width="136" height="83" rx="8" fill="#ffab40"/><line x1="195" y1="40" x2="195" y2="170" stroke="#fff" stroke-width="4"/><g style="transform-origin:195px 170px;animation:spin 1s linear infinite"><rect x="170" y="165" width="50" height="6" fill="#fff"/></g><rect x="300" y="50" width="14" height="140" rx="7" fill="#fff4"/><rect x="300" y="150" width="14" height="40" rx="7" fill="#ff1744"><animate attributeName="y" values="150;70" dur="3s" repeatCount="indefinite"/><animate attributeName="height" values="40;120" dur="3s" repeatCount="indefinite"/></rect><text x="200" y="215" fill="#fff" font-size="16" text-anchor="middle">q = m · c · ΔT</text></svg>`},
+{ph:2,t:'Kalorimetri',h:'Praktikum Virtual: Kalorimeter Sederhana',prac:1,pts:[],n:'Saatnya mencoba. Pilih reaksi, lalu tekan tombol campur. Amati perubahan suhu pada termometer, kemudian hitung entalpi reaksinya.',a:()=>''}
+];
+const Q=[
+['Reaksi yang melepas kalor dari sistem ke lingkungan disebut …',['Endoterm','Eksoterm','Isotermal','Adiabatik'],1,'Eksoterm: kalor keluar dari sistem, suhu lingkungan naik, ΔH negatif.'],
+['Ciri reaksi endoterm yang benar adalah …',['ΔH < 0, suhu lingkungan naik','ΔH > 0, suhu lingkungan turun','ΔH = 0','Kalor dilepas ke lingkungan'],1,'Endoterm menyerap kalor sehingga ΔH positif dan lingkungan terasa dingin.'],
+['Entalpi reaksi (ΔH) dirumuskan sebagai …',['H reaktan − H produk','H produk − H reaktan','H produk + H reaktan','H produk × H reaktan'],1,'ΔH = H produk − H reaktan.'],
+['Entalpi pembentukan standar (ΔHf°) adalah kalor untuk membentuk …',['1 mol senyawa dari unsur-unsurnya','1 mol unsur dari senyawanya','1 gram senyawa','2 mol senyawa dari atom gas'],0,'ΔHf° diukur pada 298 K, 1 atm, untuk 1 mol senyawa dari unsur-unsurnya yang stabil.'],
+['Zat yang memiliki ΔHf° = 0 adalah …',['H₂O(l)','CO₂(g)','O₂(g)','NH₃(g)'],2,'Unsur bebas dalam bentuk paling stabil, misalnya O₂, memiliki ΔHf° = 0.'],
+['Pernyataan yang benar tentang energi ikat adalah …',['Memutus ikatan melepas energi','Membentuk ikatan menyerap energi','Memutus ikatan memerlukan energi','Tidak ada hubungan dengan ΔH'],2,'Memutus ikatan memerlukan energi (endoterm); membentuk ikatan melepas energi (eksoterm).'],
+['H₂ + Cl₂ → 2HCl. Energi ikat H–H = 436, Cl–Cl = 243, H–Cl = 431 kJ/mol. ΔH reaksi = …',['+183 kJ','−183 kJ','−862 kJ','+679 kJ'],1,'Ikatan putus = 436 + 243 = 679. Ikatan terbentuk = 2 × 431 = 862. ΔH = 679 − 862 = −183 kJ.'],
+['100 g larutan naik suhunya 5 °C (c = 4,2 J/g°C). Kalor yang diserap larutan adalah …',['210 J','2.100 J','420 J','21.000 J'],1,'q = m·c·ΔT = 100 × 4,2 × 5 = 2.100 J = 2,1 kJ.'],
+['ΔHf° CH₄ = −75, CO₂ = −394, H₂O = −286 kJ/mol. ΔH pembakaran CH₄ (CH₄ + 2O₂ → CO₂ + 2H₂O) = …',['−891 kJ','−605 kJ','+891 kJ','−755 kJ'],0,'ΣProduk = −394 + 2(−286) = −966. ΔH = −966 − (−75) = −891 kJ.'],
+['Pada praktikum, suhu larutan naik dari 27 °C ke 34 °C setelah NaOH dicampur HCl. Kesimpulannya …',['Reaksi endoterm','Reaksi eksoterm, ΔH negatif','Tidak ada kalor','ΔH positif'],1,'Suhu larutan naik berarti kalor dilepas reaksi ke larutan: eksoterm dan ΔH negatif.']
+];
+let i=0,paused=false,muted=false,voice=null,timer=null,sc=0,ans=0,qi=0;
+function pickVoice(){const v=speechSynthesis.getVoices().filter(x=>/^id/i.test(x.lang));voice=v.find(x=>/damayanti|gadis|female|perempuan|google/i.test(x.name))||v[0]||null}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+function say(t,cb){clearTimeout(timer);try{speechSynthesis.cancel()}catch(e){}$('sub').textContent=t;$('sub').style.display='block';
+ const fb=()=>{timer=setTimeout(cb||(()=>{}),Math.max(4000,t.length*70))};
+ if(muted||!('speechSynthesis' in window)){fb();return}
+ const u=new SpeechSynthesisUtterance(t);u.lang='id-ID';if(voice)u.voice=voice;u.pitch=1.25;u.rate=.95;
+ u.onend=()=>{if(cb)timer=setTimeout(cb,600)};u.onerror=fb;speechSynthesis.speak(u)}
+function show(id){document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));$(id).classList.add('on')}
+function chips(p){[...$('chips').children].forEach((c,k)=>c.classList.toggle('on',k===p))}
+function startAll(){i=0;$('ctl').style.display='flex';play()}
+function play(){const s=S[i];show('scene');chips(s.ph);$('bar').style.width=((i+1)/(S.length+1)*100)+'%';
+ $('left').innerHTML=`<span class="term">${s.t}</span><h2>${s.h}</h2>`+(s.prac?prac():`<ul>${s.pts.map(p=>`<li>${p}</li>`).join('')}</ul>`);
+ $('right').innerHTML=s.a();
+ say(s.n,()=>{if(!paused&&!s.prac)go(1)})}
+function go(d){i+=d;if(i<0)i=0;if(i>=S.length){startQuiz();return}play()}
+function pause(){paused=!paused;$('pp').textContent=paused?'▶':'⏸';if(paused){try{speechSynthesis.cancel()}catch(e){}clearTimeout(timer)}else play()}
+function mute(){muted=!muted;$('mu').textContent=muted?'🔇':'🔊';if(muted)try{speechSynthesis.cancel()}catch(e){}}
+const RX=[['NaOH + HCl',27,34,0.05,'#ff5722'],['NH₄Cl + air',27,22,0.05,'#29b6f6']];
+function prac(){return `<p>Larutan 100 g, c = 4,2 J/g°C, 0,05 mol zat.</p><div class="pr">${RX.map((r,k)=>`<button class="btn" onclick="mix(${k})">⚗️ ${r[0]}</button>`).join('')}</div><div id="out" class="big">Pilih reaksi lalu amati…</div>`}
+function mix(k){const r=RX[k],d=r[2]-r[1],q=100*4.2*d,H=-q/1000/r[3];
+ $('right').innerHTML=`<svg viewBox="0 0 400 225">${beaker(r[4])}<rect x="300" y="50" width="14" height="140" rx="7" fill="#fff4"/><rect x="300" y="150" width="14" height="40" rx="7" fill="${d>0?'#ff1744':'#40c4ff'}"><animate attributeName="y" values="130;${d>0?70:150}" dur="2.5s" fill="freeze"/><animate attributeName="height" values="60;${d>0?120:40}" dur="2.5s" fill="freeze"/></rect><text x="200" y="215" fill="#fff" font-size="16" text-anchor="middle">T awal ${r[1]} °C → T akhir ${r[2]} °C</text></svg>`;
+ const t=`ΔT = ${d} °C. q = 100 × 4,2 × ${Math.abs(d)} = ${Math.abs(q)} J. ΔH = ${H.toFixed(0)} kJ/mol. Reaksi ${d>0?'eksoterm':'endoterm'}.`;
+ $('out').innerHTML=`ΔT = ${d} °C<br>q = ${Math.abs(q)} J<br>ΔH = ${H.toFixed(0)} kJ/mol (${d>0?'Eksoterm':'Endoterm'})<br><button class="btn f" onclick="startQuiz()">Lanjut ke Kuis ➜</button>`;
+ say(t,null)}
+function startQuiz(){sc=0;qi=0;$('ctl').style.display='none';chips(2);say('Sekarang kerjakan sepuluh soal kuis. Pilih jawaban yang paling tepat.',null);showQ()}
+function showQ(){const q=Q[qi];show('quiz');$('bar').style.width=(80+qi*2)+'%';
+ $('quiz').innerHTML=`<h2>Kuis ${qi+1} / 10</h2><p style="font-size:2.1cqw;font-weight:700">${q[0]}</p>`+q[1].map((o,k)=>`<button class="opt" onclick="pick(${k})">${'ABCD'[k]}. ${o}</button>`).join('')+`<div id="exp"></div><div id="nx"></div>`}
+function pick(k){const q=Q[qi],b=document.querySelectorAll('.opt');if(b[0].disabled)return;b.forEach((x,j)=>{x.disabled=true;if(j===q[2])x.classList.add('ok')});
+ if(k===q[2])sc++;else b[k].classList.add('no');
+ $('exp').style.display='block';$('exp').innerHTML=`<b>${k===q[2]?'✅ Benar!':'❌ Kurang tepat.'}</b> Pembahasan: ${q[3]}`;
+ say((k===q[2]?'Benar. ':'Kurang tepat. ')+'Pembahasan: '+q[3].replace(/ΔH/g,'delta H').replace(/−/g,'minus '),null);
+ $('nx').innerHTML=`<button class="btn" onclick="nextQ()">${qi<9?'Soal berikutnya ➜':'Lihat Hasil 🏁'}</button>`}
+function nextQ(){qi++;qi<10?showQ():result()}
+function result(){show('res');$('bar').style.width='100%';const n=sc*10;
+ $('res').innerHTML=`<div style="font-size:7cqw">${n>=80?'🏆':n>=60?'👍':'💪'}</div><h1>Skor: ${n}</h1><p>${sc} dari 10 soal benar</p><div><button class="btn r" onclick="startQuiz()">↻ RETRY</button><button class="btn f" onclick="fin()">✔ FINISH</button></div>`;
+ say(`Kuis selesai. Kamu menjawab ${sc} dari 10 soal dengan benar. Tekan retry untuk mengulang, atau finish untuk selesai.`,null)}
+function fin(){show('end');say('Terima kasih sudah belajar termokimia bersama. Semangat terus!',null)}
+</script></body></html>
